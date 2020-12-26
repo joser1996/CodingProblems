@@ -2,48 +2,30 @@
 #include <string.h>
 #include <sstream>
 #include <algorithm>
+#include <stdlib.h>
+#include <time.h>
 
 using namespace std;
-
-int getIndexMost(int* packets, int numPackets) {
-    int largest = packets[numPackets - 1];
-    int largestIndex = numPackets - 1;
-    for(int i = numPackets - 2; i >= 0; i--) {
-        if(packets[i] > largest) {
-            largest = packets[i];
-            largestIndex = i;
-            break;
-        }
-    }
-    return largestIndex;
-}
-
-bool isEqual(int* arr, int targetSize, int numPackets) {
-    bool res = true;
-    for(int i = 0; i < numPackets; i++) {
-        if(arr[i] != targetSize){
-            res = false;
-            break;
-        }
-    }
-    return res;
-}
 
 void minNumMoves(int* packets, int numPackets, int totalCandies) {
     int targetSize = totalCandies / numPackets;
     int numMoves = 0;
-    while(!isEqual(packets, targetSize, numPackets)) {
-        sort(packets, packets + numPackets);
-        while(packets[0] != targetSize && packets[numPackets - 1] > targetSize) {
-            packets[0]++;
-            packets[numPackets - 1]--;
+    int left = 0;
+    int right = numPackets - 1;
+    sort(packets, packets + numPackets);
+    while(left < right) {
+        //cout << "In while" << endl;
+        while(packets[left] != targetSize && packets[right] > targetSize) {
+            packets[left]++;
+            packets[right]--;
             numMoves++;
         }
-
+        if(packets[left] == targetSize) left++;
+        if(packets[right] == targetSize) right--;
     }
     cout << numMoves << endl;
 }
-
+//test for case 10000 packets each packet has less than 1000
 int main(void) {
     string buff;
     int numPackets;
@@ -81,5 +63,6 @@ int main(void) {
         //free up memory
         delete[] packets;
     }
+
     return 0;
 }
